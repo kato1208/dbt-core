@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import yaml
 
@@ -120,7 +122,9 @@ class TestCLIVarsProfile:
         write_config_file(profile, project.profiles_dir, "profiles.yml")
         with pytest.raises(DbtRuntimeError):
             results = run_dbt(["run"])
-        results = run_dbt(["run", "--vars", "db_host: localhost"])
+        results = run_dbt(
+            ["run", "--vars", f"db_host: {os.environ.get('POSTGRES_TEST_HOST', 'localhost')}"]
+        )
         assert len(results) == 1
 
 

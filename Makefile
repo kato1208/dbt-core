@@ -1,11 +1,5 @@
 .DEFAULT_GOAL:=help
 
-# Optional flag to run target in a docker container.
-# (example `make test USE_DOCKER=true`)
-ifeq ($(USE_DOCKER),true)
-	DOCKER_CMD := docker-compose run --rm test
-endif
-
 #
 # To override CI_flags, create a file at this repo's root dir named `makefile.test.env`. Fill it
 # with any ENV_VAR overrides required by your test environment, e.g.
@@ -25,6 +19,12 @@ CI_FLAGS =\
 	RUSTFLAGS=$(if $(RUSTFLAGS),$(RUSTFLAGS),"-D warnings")\
 	LOG_DIR=$(if $(LOG_DIR),$(LOG_DIR),./logs)\
 	DBT_LOG_FORMAT=$(if $(DBT_LOG_FORMAT),$(DBT_LOG_FORMAT),json)
+
+# Optional flag to run target in a docker container.
+# (example `make test USE_DOCKER=true`)
+ifeq ($(USE_DOCKER),true)
+	DOCKER_CMD := docker-compose run --rm $(foreach var,$(CI_FLAGS),--env $(var)) test
+endif
 
 
 .PHONY: dev_req

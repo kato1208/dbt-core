@@ -1,3 +1,4 @@
+import os
 import pathlib
 
 from test_profile_dir import environ
@@ -10,7 +11,7 @@ profile_with_jinjaesque_password = f"""test:
   outputs:
     default:
       dbname: my_db
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       password: {jinjaesque_password}
       port: 12345
       schema: dummy
@@ -20,12 +21,12 @@ profile_with_jinjaesque_password = f"""test:
   target: default
 """
 
-profile_with_env_password = """test:
+profile_with_env_password = f"""test:
   outputs:
     default:
       dbname: my_db
-      host: localhost
-      password: "{{ env_var('DBT_PASSWORD') }}"
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
+      password: "{{{{ env_var('DBT_PASSWORD') }}}}"
       port: 12345
       schema: dummy
       threads: 4

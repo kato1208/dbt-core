@@ -317,7 +317,7 @@ class TestProfileEnvVars:
     @pytest.fixture(scope="class")
     def environment(self):
         custom_env = os.environ.copy()
-        custom_env["ENV_VAR_HOST"] = "localhost"
+        custom_env["ENV_VAR_HOST"] = os.environ.get("POSTGRES_TEST_HOST", "localhost")
         return custom_env
 
     @pytest.fixture(scope="class")
@@ -335,7 +335,7 @@ class TestProfileEnvVars:
     def test_profile_env_vars(self, project, logs_dir):
 
         # Initial run
-        os.environ["ENV_VAR_HOST"] = "localhost"
+        os.environ["ENV_VAR_HOST"] = os.environ.get("POSTGRES_TEST_HOST", "localhost")
 
         run_dbt(["run"])
 
@@ -371,7 +371,7 @@ class TestProfileSecretEnvVars:
         return {
             "type": "postgres",
             "threads": 4,
-            "host": "localhost",
+            "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             "port": 5432,
             "user": "{{ env_var('DBT_ENV_SECRET_USER') }}",
             "pass": "{{ env_var('ENV_VAR_PASS') }}",

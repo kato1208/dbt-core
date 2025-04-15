@@ -76,7 +76,7 @@ class TestEnvVars:
                     "dev": {
                         "type": "postgres",
                         "threads": 1,
-                        "host": "localhost",
+                        "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
                         "port": 5432,
                         "user": "root",
                         "pass": "password",
@@ -86,7 +86,7 @@ class TestEnvVars:
                     "prod": {
                         "type": "postgres",
                         "threads": 1,
-                        "host": "localhost",
+                        "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
                         "port": 5432,
                         # root/password
                         "user": "{{ env_var('DBT_TEST_USER') }}",
@@ -152,7 +152,7 @@ class TestEnvVars:
         assert ctx["this.table"] == "context"
 
         assert ctx["target.dbname"] == "dbt"
-        assert ctx["target.host"] == "localhost"
+        assert ctx["target.host"] == os.environ.get("POSTGRES_TEST_HOST", "localhost")
         assert ctx["target.name"] == "dev"
         assert ctx["target.port"] == 5432
         assert ctx["target.schema"] == project.test_schema
@@ -176,7 +176,7 @@ class TestEnvVars:
         assert ctx["this.table"] == "context"
 
         assert ctx["target.dbname"] == "dbt"
-        assert ctx["target.host"] == "localhost"
+        assert ctx["target.host"] == os.environ.get("POSTGRES_TEST_HOST", "localhost")
         assert ctx["target.name"] == "prod"
         assert ctx["target.port"] == 5432
         assert ctx["target.schema"] == project.test_schema

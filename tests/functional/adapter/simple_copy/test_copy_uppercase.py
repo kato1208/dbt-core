@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from dbt.tests.util import check_relations_equal, run_dbt
@@ -22,7 +24,7 @@ class TestSimpleCopyUppercase:
         return {
             "type": "postgres",
             "threads": 4,
-            "host": "localhost",
+            "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             "port": 5432,
             "user": "root",
             "pass": "password",

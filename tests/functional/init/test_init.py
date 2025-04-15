@@ -24,7 +24,7 @@ class TestInitProjectWithExistingProfilesYml:
         manager.confirm.side_effect = ["y"]
         manager.prompt.side_effect = [
             1,
-            "localhost",
+            os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             5432,
             "test_user",
             "test_password",
@@ -70,11 +70,11 @@ class TestInitProjectWithExistingProfilesYml:
         with open(os.path.join(project.profiles_dir, "profiles.yml"), "r") as f:
             assert (
                 f.read()
-                == """test:
+                == f"""test:
   outputs:
     dev:
       dbname: test_db
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: test_password
       port: 5432
       schema: test_schema
@@ -107,7 +107,7 @@ class TestInitProjectWithoutExistingProfilesYml:
         manager.attach_mock(mock_prompt, "prompt")
         manager.prompt.side_effect = [
             1,
-            "localhost",
+            os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             5432,
             "test_user",
             "test_password",
@@ -150,11 +150,11 @@ class TestInitProjectWithoutExistingProfilesYml:
         with open(os.path.join(project.profiles_dir, "profiles.yml"), "r") as f:
             assert (
                 f.read()
-                == """test:
+                == f"""test:
   outputs:
     dev:
       dbname: test_db
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: test_password
       port: 5432
       schema: test_schema
@@ -262,10 +262,10 @@ class TestInitProjectWithProfileTemplateWithoutExistingProfilesYml:
 
         with open("profile_template.yml", "w") as f:
             f.write(
-                """fixed:
+                f"""fixed:
   type: postgres
   threads: 4
-  host: localhost
+  host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
   dbname: my_db
   schema: my_schema
   target: my_target
@@ -309,11 +309,11 @@ prompts:
         with open(os.path.join(project.profiles_dir, "profiles.yml"), "r") as f:
             assert (
                 f.read()
-                == """test:
+                == f"""test:
   outputs:
     my_target:
       dbname: my_db
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: test_password
       port: 5432
       schema: my_schema
@@ -343,7 +343,7 @@ class TestInitInvalidProfileTemplate:
         manager.confirm.side_effect = ["y"]
         manager.prompt.side_effect = [
             1,
-            "localhost",
+            os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             5432,
             "test_username",
             "test_password",
@@ -389,11 +389,11 @@ class TestInitInvalidProfileTemplate:
         with open(os.path.join(project.profiles_dir, "profiles.yml"), "r") as f:
             assert (
                 f.read()
-                == """test:
+                == f"""test:
   outputs:
     dev:
       dbname: test_db
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: test_password
       port: 5432
       schema: test_schema
@@ -431,7 +431,7 @@ class TestInitOutsideOfProject(TestInitOutsideOfProjectBase):
                     "default2": {
                         "type": "postgres",
                         "threads": 4,
-                        "host": "localhost",
+                        "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
                         "port": int(os.getenv("POSTGRES_TEST_PORT", 5432)),
                         "user": os.getenv("POSTGRES_TEST_USER", "root"),
                         "pass": os.getenv("POSTGRES_TEST_PASS", "password"),
@@ -441,7 +441,7 @@ class TestInitOutsideOfProject(TestInitOutsideOfProjectBase):
                     "noaccess": {
                         "type": "postgres",
                         "threads": 4,
-                        "host": "localhost",
+                        "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
                         "port": int(os.getenv("POSTGRES_TEST_PORT", 5432)),
                         "user": "noaccess",
                         "pass": "password",
@@ -465,7 +465,7 @@ class TestInitOutsideOfProject(TestInitOutsideOfProjectBase):
         manager.prompt.side_effect = [
             project_name,
             1,
-            "localhost",
+            os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             5432,
             "test_username",
             "test_password",
@@ -512,7 +512,7 @@ class TestInitOutsideOfProject(TestInitOutsideOfProjectBase):
   outputs:
     dev:
       dbname: test_db
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: test_password
       port: 5432
       schema: test_schema
@@ -524,7 +524,7 @@ test:
   outputs:
     default2:
       dbname: dbt
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: password
       port: 5432
       schema: {unique_schema}
@@ -533,7 +533,7 @@ test:
       user: root
     noaccess:
       dbname: dbt
-      host: localhost
+      host: {os.environ.get("POSTGRES_TEST_HOST", "localhost")}
       pass: password
       port: 5432
       schema: {unique_schema}
@@ -648,7 +648,7 @@ class TestInitProvidedProjectNameAndSkipProfileSetup(TestInitOutsideOfProjectBas
         manager.attach_mock(mock_confirm, "confirm")
         manager.prompt.side_effect = [
             1,
-            "localhost",
+            os.environ.get("POSTGRES_TEST_HOST", "localhost"),
             5432,
             "test_username",
             "test_password",

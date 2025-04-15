@@ -114,7 +114,7 @@ class BaseParserTest(unittest.TestCase):
             "outputs": {
                 "test": {
                     "type": "postgres",
-                    "host": "localhost",
+                    "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
                     "schema": "analytics",
                     "user": "test",
                     "pass": "test",

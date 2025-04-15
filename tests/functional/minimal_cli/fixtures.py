@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from click.testing import CliRunner
 
@@ -75,7 +77,7 @@ class BaseConfigProject:
                         "type": "postgres",
                         "dbname": "dbt",
                         "schema": "jaffle_shop",
-                        "host": "localhost",
+                        "host": os.environ.get("POSTGRES_TEST_HOST", "localhost"),
                         "user": "root",
                         "port": 5432,
                         "pass": "password",
